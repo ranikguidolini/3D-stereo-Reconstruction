@@ -1,3 +1,10 @@
 calibrate/*.o
 calibrate/*~
 calibrate/calib
+rectify/*.o
+rectify/*~
+rectify/rectify
+uframe/*.o
+uframe/*~
+uframe/frame
+uframe/crialista
