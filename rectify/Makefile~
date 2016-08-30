@@ -1,0 +1,6 @@
+all:
+	g++ -o rectify rectify2.cpp `pkg-config --cflags opencv` `pkg-config --libs opencv` -w
+
+clean:
+	rm rectify
+ 

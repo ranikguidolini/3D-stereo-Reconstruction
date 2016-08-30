@@ -1,0 +1,110 @@
+#pragma warning( disable: 4996 )
+/* *************** License:**************************
+   Oct. 3, 2008
+   Right to use this code in any way you want without warrenty, support or any guarentee of it working.
+
+   BOOK: It would be nice if you cited it:
+   Learning OpenCV: Computer Vision with the OpenCV Library
+     by Gary Bradski and Adrian Kaehler
+     Published by O'Reilly Media, October 3, 2008
+ 
+   AVAILABLE AT: 
+     http://www.amazon.com/Learning-OpenCV-Computer-Vision-Library/dp/0596516134
+     Or: http://oreilly.com/catalog/9780596516130/
+     ISBN-10: 0596516134 or: ISBN-13: 978-0596516130    
+
+   OTHER OPENCV SITES:
+   * The source code is on sourceforge at:
+     http://sourceforge.net/projects/opencvlibrary/
+   * The OpenCV wiki page (As of Oct 1, 2008 this is down for changing over servers, but should come back):
+     http://opencvlibrary.sourceforge.net/
+   * An active user group is at:
+     http://tech.groups.yahoo.com/group/OpenCV/
+   * The minutes of weekly OpenCV development meetings are at:
+     http://pr.willowgarage.com/wiki/OpenCV
+   ************************************************** */
+
+/*
+	Modified by Martin Peris Martorell (info@martinperis.com) in order to accept some configuration
+	parameters and store all the calibration data as xml files.
+
+*/
+
+/* Modificado por RANIK g++ -o metch metch.cpp `pkg-config --cflags opencv` `pkg-config --libs opencv` -w
+#include "cv.h"
+#include "cxmisc.h"
+#include "highgui.h"
+#include "cvaux.h"*/
+
+#include <opencv2/opencv.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/core/core.hpp"
+
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <iterator>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <sstream>
+
+using namespace std;
+
+static void
+StereoCalib(const char* imageList, int nx, int ny, int useUncalibrated, float _squareSize)
+{
+    
+    //Load Matrix Q
+    //CvMat* A1 = (CvMat*)cvLoad( "Q.xml");
+    
+    CvMat* A1 = (CvMat*) cvLoad("P1.xml");
+    cout << CV_MAT_ELEM(*A1, float, 0, 0) << endl;
+    
+    cvSave("P1d.xml",_P1);
+
+}
+int main(int argc, char *argv[])
+{
+    int nx, ny;
+    float squareSize;
+    int fail = 0;
+    //Check command line
+    if (argc != 5)
+    {
+        fprintf(stderr,"USAGE: %s imageList nx ny squareSize\n",argv[0]);
+        fprintf(stderr,"\t imageList : Filename of the image list (string). Example : list.txt\n");
+        fprintf(stderr,"\t nx : Number of horizontal squares (int > 0). Example : 9\n");
+        fprintf(stderr,"\t ny : Number of vertical squares (int > 0). Example : 6\n");
+        fprintf(stderr,"\t squareSize : Size of a square (float > 0). Example : 2.5\n");
+        return 1;
+    } 
+
+		nx = atoi(argv[2]);
+    ny = atoi(argv[3]);
+    squareSize = (float)atof(argv[4]);
+
+    if (nx <= 0)
+    {
+        fail = 1;
+        fprintf(stderr, "ERROR: nx value can not be <= 0\n");
+    }
+    if (ny <= 0)
+    {
+        fail = 1;
+        fprintf(stderr, "ERROR: ny value can not be <= 0\n");
+    }   
+    if (squareSize <= 0.0)
+    {
+        fail = 1;
+        fprintf(stderr, "ERROR: squareSize value can not be <= 0\n");
+    }   
+
+    if(fail != 0) return 1;
+
+    StereoCalib(argv[1], nx, ny, 0, squareSize);
+    return 0;
+}
